@@ -1,0 +1,32 @@
+// Run with scripts/test.sh (it makes `use vexstd;` resolve to this checkout).
+use vexstd;
+
+ensure abs(0 - 5) == 5 else "abs negative";
+ensure abs(7) == 7 else "abs positive";
+ensure min(3, 9) == 3 else "min";
+ensure max(3, 9) == 9 else "max";
+ensure clamp(15, 0, 10) == 10 else "clamp high";
+ensure clamp(0 - 3, 0, 10) == 0 else "clamp low";
+ensure clamp(4, 0, 10) == 4 else "clamp inside";
+ensure sign(0 - 8) == 0 - 1 else "sign negative";
+ensure sign(0) == 0 else "sign zero";
+ensure sign(8) == 1 else "sign positive";
+ensure between(5, 1, 5) else "between inclusive";
+ensure !between(6, 1, 5) else "between outside";
+ensure rem(17, 5) == 2 else "rem";
+ensure rem(0 - 17, 5) == 0 - 2 else "rem negative";
+ensure is_even(4) && is_odd(7) else "parity";
+ensure is_even(0 - 6) else "parity negative";
+ensure pow(2, 10) == 1024 else "pow";
+ensure pow(5, 0) == 1 else "pow zero";
+ensure pow(2, 0 - 1) == 0 else "pow negative exponent";
+ensure gcd(48, 18) == 6 else "gcd";
+ensure gcd(0 - 48, 18) == 6 else "gcd negative";
+ensure gcd(0, 0) == 0 else "gcd zero";
+ensure lcm(4, 6) == 12 else "lcm";
+ensure lcm(0, 6) == 0 else "lcm zero";
+ensure unwrap_or(ok(5), 0) == 5 else "unwrap_or ok";
+ensure unwrap_or(err("nope"), 7) == 7 else "unwrap_or err";
+ensure is_ok(ok(1)) && is_err(err("e")) else "is_ok / is_err";
+
+println("vexstd: all checks passed");

@@ -1,0 +1,28 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: vexstd checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
+      - name: Install vexlang (main)
+        run: cargo install --locked --git https://github.com/cybercoretech/vexlang vexlang
+      - name: Run checks
+        run: ./scripts/test.sh
+      - name: Package is reproducible
+        run: |
+          vexlang package --out "$RUNNER_TEMP/a"
+          vexlang package --out "$RUNNER_TEMP/b"
+          cmp "$RUNNER_TEMP"/a/*.tar.gz "$RUNNER_TEMP"/b/*.tar.gz

@@ -1,0 +1,7 @@
+[project]
+name = "vexstd"
+version = "0.1.0"
+lib = "src/lib.vex"
+description = "Small standard helpers for Vex: integer math and Result utilities"
+
+[dependencies]

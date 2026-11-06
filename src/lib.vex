@@ -1,0 +1,93 @@
+// vexstd: small standard helpers for Vex.
+//
+//   use vexstd;            // everything
+//   use vexstd::clamp;     // check one item exists
+//
+// All integer helpers work on i32 and use Vex's checked arithmetic, so
+// overflow and division by zero trap instead of wrapping.
+
+// ---- Integer math ---------------------------------------------------------
+
+// Absolute value. abs(-2147483648) traps (it does not fit in i32).
+fn abs(x: i32) -> i32 { if x < 0 { 0 - x } else { x } }
+
+// Smaller of two values.
+fn min(a: i32, b: i32) -> i32 { if a < b { a } else { b } }
+
+// Larger of two values.
+fn max(a: i32, b: i32) -> i32 { if a > b { a } else { b } }
+
+// x limited to the range lo..=hi (expects lo <= hi).
+fn clamp(x: i32, lo: i32, hi: i32) -> i32 { min(max(x, lo), hi) }
+
+// -1, 0 or 1 depending on the sign of x.
+fn sign(x: i32) -> i32 { if x < 0 { 0 - 1 } else { if x > 0 { 1 } else { 0 } } }
+
+// True when lo <= x <= hi.
+fn between(x: i32, lo: i32, hi: i32) -> bool { !(x < lo) && !(x > hi) }
+
+// Remainder of a / b, with the sign of a (like Rust's %). b == 0 traps.
+fn rem(a: i32, b: i32) -> i32 { a - (a / b) * b }
+
+fn is_even(x: i32) -> bool { rem(x, 2) == 0 }
+
+fn is_odd(x: i32) -> bool { !is_even(x) }
+
+// base raised to exp. A negative exp returns 0 (no fractions in i32).
+fn pow(base: i32, exp: i32) -> i32 {
+    if exp < 0 {
+        0
+    } else {
+        let result = 1;
+        let i = 0;
+        while i < exp {
+            result = result * base;
+            i = i + 1;
+        }
+        result
+    }
+}
+
+// Greatest common divisor (always >= 0; gcd(0, 0) == 0).
+fn gcd(a: i32, b: i32) -> i32 {
+    let x = abs(a);
+    let y = abs(b);
+    while y > 0 {
+        let t = rem(x, y);
+        x = y;
+        y = t;
+    }
+    x
+}
+
+// Least common multiple (always >= 0; 0 if either argument is 0).
+fn lcm(a: i32, b: i32) -> i32 {
+    if (a == 0) || (b == 0) { 0 } else { abs(a / gcd(a, b) * b) }
+}
+
+// ---- Result helpers ---------------------------------------------------------
+
+// The Ok value of r, or `otherwise` if r is an Err.
+fn unwrap_or(r: Result, otherwise: i32) -> i32 {
+    match r { Ok(value) => value, Err(error) => otherwise }
+}
+
+fn is_ok(r: Result) -> bool { match r { Ok(value) => true, Err(error) => false } }
+
+fn is_err(r: Result) -> bool { !is_ok(r) }
+
+export abs;
+export min;
+export max;
+export clamp;
+export sign;
+export between;
+export rem;
+export is_even;
+export is_odd;
+export pow;
+export gcd;
+export lcm;
+export unwrap_or;
+export is_ok;
+export is_err;
