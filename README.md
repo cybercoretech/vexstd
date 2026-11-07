@@ -45,14 +45,16 @@ so overflow and division by zero trap instead of wrapping.
   reachable as `vexstd::min(...)`. To import just a few helpers unqualified,
   use `use vexstd::clamp;`. With vexlang 0.1.0-alpha.2, a clash like that is
   an `E1104` error instead.
-- **Interpreter only for `Result` helpers:** the `rust` backend can't
-  express Vex's untyped `Result` parameters yet, so programs using
-  `unwrap_or`/`is_ok`/`is_err` don't transpile to Rust. The integer helpers do.
+- **Rust backend:** with vexlang newer than 0.1.0-alpha.3, everything
+  transpiles with `vexlang rust`, `Result` helpers included. In that output,
+  `Result` is `Result<i32, String>`. vexlang 0.1.0-alpha.3 and older can
+  only transpile the integer helpers.
 
 ## 🛠️ Development
 
 ```sh
-scripts/test.sh             # vexlang check + 27 runtime checks (tests/smoke.vex)
+scripts/test.sh             # vexlang check + 27 checks, interpreted and as compiled Rust
+VEXSTD_SKIP_RUST=1 scripts/test.sh   # interpreter only
 vexlang package             # dist/vexstd-VERSION.tar.gz (reproducible)
 ```
 
