@@ -7,14 +7,15 @@ integer math and `Result` utilities. It's the first package in the
 ## 📥 Install
 
 ```sh
-vexlang add vexstd          # adds vexstd = "0.1.0" to vex.toml and installs it
+cargo install vexlang@0.1.0-alpha.3   # the CLI, if you don't have it yet
+vexlang add vexstd                    # adds vexstd = "0.1.0" (any 0.1.x) and installs it
 ```
 
 ```vex
 use vexstd;
 
 println(clamp(150, 0, 100));          // 100
-println(gcd(48, 18));                 // 6
+println(vexstd::gcd(48, 18));         // 6, by module path
 println(unwrap_or(err("nope"), 7));   // 7
 ```
 
@@ -39,9 +40,11 @@ so overflow and division by zero trap instead of wrapping.
 
 ## ⚠️ Notes
 
-- **Shared namespace:** Vex modules currently share one namespace, so if your
-  program declares its own `min` or `abs`, `use vexstd;` reports a clash
-  (`E1104`) that names both. Rename yours, or don't import vexstd into that file.
+- **Names:** since vexlang 0.1.0-alpha.3, module functions are namespaced.
+  If your program declares its own `min`, yours wins, and vexstd's stays
+  reachable as `vexstd::min(...)`. To import just a few helpers unqualified,
+  use `use vexstd::clamp;`. With vexlang 0.1.0-alpha.2, a clash like that is
+  an `E1104` error instead.
 - **Interpreter only for `Result` helpers:** the `rust` backend can't
   express Vex's untyped `Result` parameters yet, so programs using
   `unwrap_or`/`is_ok`/`is_err` don't transpile to Rust. The integer helpers do.
